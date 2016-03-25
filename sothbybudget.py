@@ -60,13 +60,16 @@ class SothbyBudget:
         #print("other bids",other_bids)
         clicks = prev_round.clicks
         #print("clicks", clicks)
-        num_slot = len(other_bids)
+        num_slot = len(clicks)
         #print(num_slot)
         for i in range(num_slot):
-            utility = clicks[i]*(self.value - bid_value_list[i])
+            if i != (num_slot-1):
+                utility = clicks[i]*(self.value - bid_value_list[i])
+            else:
+                utility = clicks[i]*(self.value - reserve)
             utilities.append(utility)
         #print("utilities", utilities)
-        
+        #print(utilities)
         return utilities
 
     def target_slot(self, t, history, reserve):
@@ -103,12 +106,24 @@ class SothbyBudget:
         if min_bid > self.value or slot == 0:
             bid = self.value
         else:
-            currentUtility = clicks[slot]*(self.value - bid_value_list[slot])
-            bid = self.value - currentUtility/clicks[slot-1]
-            #what if target the last position or it won't happen?
-        #if t >=21 and t <=27 and bid > self:
-            #bid = self.value/
-        print("value", self.value, "bid", bid, "time", t, "budget", self.budget)        
+            if slot != (len(clicks)-1):
+                currentUtility = clicks[slot]*(self.value - bid_value_list[slot])
+                #print(clicks[slot], "*",self.value ,"-",bid_value_list[slot] )
+            else:
+                currentUtility = clicks[slot]*(self.value - reserve)
+                
+            bid = self.value - float(currentUtility)/clicks[slot-1]
+            #print(self.value, "-",currentUtility,"/",clicks[slot-1])
+
+
+        #bid less when the clicks is few
+        if t >= 18 and t <= 25:
+            bid = reserve+1
+        else if t >= 36 or t <= 6:
+            bid = self.value
+
+            
+        #print("t",t, "value", self.value, "bid", bid, "reserve", reserve)
         return bid
 
     def __repr__(self):
