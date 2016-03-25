@@ -105,7 +105,7 @@ class SothbyBB:
         else:
             currentUtility = clicks[slot]*(self.value - bid_value_list[slot])
             bid = self.value - currentUtility/clicks[slot-1]
-            #what if target the last position
+            #what if target the last position or it won't happen?
         return bid
 
     def __repr__(self):
