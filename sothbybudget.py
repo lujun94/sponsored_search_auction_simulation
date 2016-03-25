@@ -5,7 +5,7 @@ import sys
 from gsp import GSP
 from util import argmax_index
 
-class BBAgent:
+class SothbyBudget:
     """Balanced bidding agent"""
     def __init__(self, id, value, budget):
         self.id = id
@@ -51,7 +51,21 @@ class BBAgent:
         """
         # TODO: Fill this in
         utilities = []   # Change this
-
+        prev_round = history.round(t-1)
+        other_bids = filter(lambda (a_id, b): a_id != self.id, prev_round.bids)
+        bid_value_list = []
+        for bidSet in other_bids:
+            bid_value_list.append(bidSet[1])
+            
+        #print("other bids",other_bids)
+        clicks = prev_round.clicks
+        #print("clicks", clicks)
+        num_slot = len(other_bids)
+        #print(num_slot)
+        for i in range(num_slot):
+            utility = clicks[i]*(self.value - bid_value_list[i])
+            utilities.append(utility)
+        #print("utilities", utilities)
         
         return utilities
 
@@ -79,11 +93,22 @@ class BBAgent:
         # If s*_j is the top slot, bid the value v_j
 
         prev_round = history.round(t-1)
+        other_bids = filter(lambda (a_id, b): a_id != self.id, prev_round.bids)
+        bid_value_list = []
+        for bidSet in other_bids:
+            bid_value_list.append(bidSet[1])
+            
+        clicks = prev_round.clicks
         (slot, min_bid, max_bid) = self.target_slot(t, history, reserve)
-
-        # TODO: Fill this in.
-        bid = 0  # change this
-        
+        if min_bid > self.value or slot == 0:
+            bid = self.value
+        else:
+            currentUtility = clicks[slot]*(self.value - bid_value_list[slot])
+            bid = self.value - currentUtility/clicks[slot-1]
+            #what if target the last position or it won't happen?
+        #if t >=21 and t <=27 and bid > self:
+            #bid = self.value/
+        print("value", self.value, "bid", bid, "time", t, "budget", self.budget)        
         return bid
 
     def __repr__(self):

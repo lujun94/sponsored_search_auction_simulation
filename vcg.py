@@ -62,9 +62,7 @@ class VCG:
                     nextp = valid_bids[k+1][1]
                 payment = max(reserve, nextp)*c[k]
             else:
-                #print(valid_bids[k+1][1])
                 payment = (c[k]-c[k+1])*valid_bids[k+1][1] + total_payment(k+1)
-            #print(payment)
             return payment
                 
         def norm(totals):
