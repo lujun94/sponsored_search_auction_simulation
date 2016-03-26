@@ -117,9 +117,11 @@ class SothbyBudget:
 
 
         #bid less when the clicks is few
-        if t >= 18 and t <= 25:
+        if t >= 12 and t <= 30:
             bid = reserve+1
-        else if t >= 36 or t <= 6:
+        elif t > 2 and t <= 8:
+            bid = self.value
+        elif t >= 36:
             bid = self.value
 
             
